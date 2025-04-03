@@ -1,29 +1,30 @@
 const mysql = require('mysql2');
 
-// Habilitar logs para depuración
-console.log('Configuración de la base de datos:');
-console.log('MYSQL_HOST:', process.env.MYSQL_HOST);
-console.log('MYSQL_USER:', process.env.MYSQL_USER);
-console.log('MYSQL_DATABASE:', process.env.MYSQL_DATABASE);
-console.log('MYSQL_PORT:', process.env.MYSQL_PORT);
+// Asumiendo que ya configuraste todas estas variables en tu servicio
+const config = {
+  host: process.env.MYSQLHOST || 'mysql.railway.internal',
+  user: process.env.MYSQLUSER || 'root',
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE || 'railway',
+  port: process.env.MYSQLPORT || 3306
+};
 
-const connection = mysql.createConnection({
-  host: process.env.MYSQL_HOST || 'localhost',
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'control_pacientes',
-  port: process.env.MYSQL_PORT || 3306,
-  // Agregar opciones de reintento y tiempo de espera
-  connectTimeout: 60000,
-  ssl: process.env.MYSQL_CERT ? {ca: process.env.MYSQL_CERT} : false
-});
+console.log('Intentando conectar con configuración:', JSON.stringify({
+  host: config.host,
+  user: config.user,
+  database: config.database,
+  port: config.port,
+  // No imprimimos la contraseña por seguridad
+}));
 
-connection.connect(err => {
+const connection = mysql.createConnection(config);
+
+connection.connect((err) => {
   if (err) {
-    console.error('Error de conexión a la base de datos:', err.stack);
+    console.error('Error conectando a la base de datos:', err);
     return;
   }
-  console.log('Conectado a la base de datos MySQL');
+  console.log('Conectado exitosamente a la base de datos MySQL');
 });
 
 module.exports = connection;
