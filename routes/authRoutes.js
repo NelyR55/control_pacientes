@@ -1,6 +1,6 @@
 // Backend: Express - auth routes
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // Changed from bcrypt to bcryptjs
 const User = require('../models/User');
 
 const router = express.Router();
